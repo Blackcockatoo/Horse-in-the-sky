@@ -76,6 +76,31 @@ export function assessFlight(
   conditions: FlightConditions,
   limits: FlightLimits = DEFAULT_FLIGHT_LIMITS
 ): FlightAssessment {
+  if (conditions.runways.length === 0) {
+    const noRunwayDecision: Decision = { verdict: 'NO_GO', reason: 'No runway data available' };
+    const fr = fogRisk(conditions.tempC, conditions.dewpointC);
+    const cloudBase = estimateCloudBase(conditions.tempC, conditions.dewpointC);
+    const da = densityAltitude(conditions.fieldElevationM, conditions.tempC, conditions.qnhHpa);
+    const gf = gustFactor(conditions.windSpeedKts, conditions.gustSpeedKts);
+
+    return {
+      overall: noRunwayDecision,
+      runway: { id: 'UNKNOWN', headwind: 0, crosswind: 0 },
+      wind: noRunwayDecision,
+      visibility: noRunwayDecision,
+      ceiling: noRunwayDecision,
+      densityAlt: noRunwayDecision,
+      fog: noRunwayDecision,
+      precipitation: noRunwayDecision,
+      details: {
+        cloudBaseFt: cloudBase,
+        densityAltFt: da,
+        gustFactor: gf,
+        fogRisk: fr,
+      },
+    };
+  }
+
   const rwy = bestRunway(conditions.windDir, conditions.windSpeedKts, conditions.runways);
   const xw = Math.abs(crosswindComponent(conditions.windDir, conditions.windSpeedKts, rwy.heading_deg));
   const hw = headwindComponent(conditions.windDir, conditions.windSpeedKts, rwy.heading_deg);
