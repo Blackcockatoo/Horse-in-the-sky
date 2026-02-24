@@ -13,6 +13,19 @@ export default function RadarLoop() {
   const [view, setView] = useState<'256' | '128'>('256');
 
   const url = view === '256' ? RADAR_URLS.melbourne256 : RADAR_URLS.melbourne128;
+  const sourceUrl = RADAR_URLS.melbourne256;
+  const sourceLinkStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '44px',
+    padding: '0.5rem 0.75rem',
+    color: '#8ec5ff',
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    textDecoration: 'underline',
+    textUnderlineOffset: '0.2em',
+  } as const;
 
   return (
     <div style={{
@@ -31,7 +44,15 @@ export default function RadarLoop() {
         <div style={{ fontSize: '0.85rem', color: '#888', fontWeight: 700, letterSpacing: '0.15em' }}>
           MELBOURNE RADAR
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={sourceLinkStyle}
+          >
+            View source data
+          </a>
           <button
             onClick={() => setView('256')}
             style={{
@@ -78,6 +99,21 @@ export default function RadarLoop() {
           title="BOM Radar Loop"
           loading="lazy"
         />
+      </div>
+      <div style={{
+        borderTop: '1px solid #333',
+        padding: '0.5rem 1rem',
+        display: 'flex',
+        justifyContent: 'flex-end',
+      }}>
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={sourceLinkStyle}
+        >
+          View source data
+        </a>
       </div>
     </div>
   );
