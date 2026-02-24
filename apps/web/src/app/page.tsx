@@ -7,6 +7,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import DecisionPanel from '../components/DecisionPanel';
+import AutoRefresh from '../components/AutoRefresh';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -86,5 +87,10 @@ export default function Dashboard() {
     );
   }
 
-  return <DecisionPanel data={data} />;
+  return (
+    <>
+      <DecisionPanel data={data} />
+      <AutoRefresh />
+    </>
+  );
 }
