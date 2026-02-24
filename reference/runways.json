@@ -1,0 +1,10 @@
+{
+  "YTYA": {
+    "runways": [
+      { "id": "17", "heading_deg": 170 },
+      { "id": "35", "heading_deg": 350 },
+      { "id": "08", "heading_deg": 80 },
+      { "id": "26", "heading_deg": 260 }
+    ]
+  }
+}

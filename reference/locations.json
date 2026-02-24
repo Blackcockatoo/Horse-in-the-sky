@@ -1,0 +1,5 @@
+{
+  "farm": { "lat": -38.31391944, "lon": 145.12367778, "elevation_m": 79.46 },
+  "plane": { "lat": -38.26221944, "lon": 145.18060000, "elevation_m": 23.03 },
+  "tyabb": { "icao": "YTYA", "lat": -38.2668, "lon": 145.1794, "elevation_m": 26.8 }
+}

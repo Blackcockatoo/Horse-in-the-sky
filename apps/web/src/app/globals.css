@@ -1,0 +1,147 @@
+/*
+ * HMFFCC Global Styles
+ * Design principles:
+ * - Black background, high contrast text
+ * - Instrument panel aesthetic
+ * - Big touch targets
+ * - Monospace everywhere that matters
+ * - No decorative nonsense
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #000;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Navigation — fixed bottom on mobile, fixed top on desktop */
+nav {
+  background: #0a0a0a;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 48px;
+}
+
+.nav-brand {
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 1rem;
+  color: #00c853;
+  text-decoration: none;
+  letter-spacing: 0.15em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0;
+}
+
+.nav-links a {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #888;
+  text-decoration: none;
+  padding: 0.75rem 0.75rem;
+  letter-spacing: 0.1em;
+  transition: color 0.15s;
+  min-width: 44px;
+  text-align: center;
+}
+
+.nav-links a:hover,
+.nav-links a:active {
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+
+.main-content {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 48px);
+}
+
+/* Pulse animation for warnings */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #00c853;
+  outline-offset: 2px;
+}
+
+/* Large touch targets */
+button, a, input, select {
+  min-height: 44px;
+}
+
+/* Selection */
+::selection {
+  background: #00c853;
+  color: #000;
+}
+
+/* Responsive: larger text on mobile for Pete's big fingers */
+@media (max-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+
+  .nav-links a {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .main-content {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 20px;
+  }
+
+  .nav-links a {
+    padding: 0.75rem 0.35rem;
+    font-size: 0.7rem;
+  }
+}
