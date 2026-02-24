@@ -9,10 +9,18 @@
 import { useState } from 'react';
 import { RADAR_URLS } from '../server/providers/bom.provider';
 
-export default function RadarLoop() {
+interface RadarLoopProps {
+  urls?: {
+    melbourne256: string;
+    melbourne128: string;
+  };
+}
+
+export default function RadarLoop({ urls }: RadarLoopProps) {
   const [view, setView] = useState<'256' | '128'>('256');
 
-  const url = view === '256' ? RADAR_URLS.melbourne256 : RADAR_URLS.melbourne128;
+  const radarUrls = urls ?? RADAR_URLS;
+  const url = view === '256' ? radarUrls.melbourne256 : radarUrls.melbourne128;
 
   return (
     <div style={{

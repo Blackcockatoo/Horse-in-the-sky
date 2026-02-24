@@ -2,23 +2,55 @@
 
 /**
  * DASHBOARD — The command center.
- * One screen. Five questions answered. No scrolling required for decisions.
+ * One screen. Fiv…11 chars truncated… answered. No scrolling required for decisions.
  */
 
 import { useEffect, useState, useCallback } from 'react';
 import DecisionPanel from '../components/DecisionPanel';
+import DataCredibilityCard from '../components/DataCredibilityCard';
+import type { DataCredibilityMeta } from '../types/wx.types';
+
+interface WarningsApiResponse {
+  credibility?: DataCredibilityMeta;
+}
+
+interface RadarApiResponse {
+  credibility?: DataCredibilityMeta;
+}
+
+interface WeatherApiResponse {
+  credibility?: DataCredibilityMeta;
+}
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [weatherCredibility, setWeatherCredibility] = useState<DataCredibilityMeta | null>(null);
+  const [warningsCredibility, setWarningsCredibility] = useState<DataCredibilityMeta | null>(null);
+  const [radarCredibility, setRadarCredibility] = useState<DataCredibilityMeta | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch('/api/decision');
-      if (!res.ok) throw new Error(`${res.status}`);
-      const json = await res.json();
-      setData(json);
+      const [decisionRes, weatherRes, warningsRes, radarRes] = await Promise.all([
+        fetch('/api/decision'),
+        fetch('/api/weather'),
+        fetch('/api/warnings'),
+        fetch('/api/radar'),
+      ]);
+
+      if (!decisionRes.ok) throw new Error(`${decisionRes.status}`);
+      const [decisionJson, weatherJson, warningsJson, radarJson] = await Promise.all([
+        decisionRes.json(),
+        weatherRes.json() as Promise<WeatherApiResponse>,
+        warningsRes.json() as Promise<WarningsApiResponse>,
+        radarRes.json() as Promise<RadarApiResponse>,
+      ]);
+
+      setData(decisionJson);
+      if (weatherJson.credibility) setWeatherCredibility(weatherJson.credibility);
+      if (warningsJson.credibility) setWarningsCredibility(warningsJson.credibility);
+      if (radarJson.credibility) setRadarCredibility(radarJson.credibility);
       setError(null);
     } catch (err) {
       setError('Failed to fetch data. Retrying...');
@@ -86,5 +118,20 @@ export default function Dashboard() {
     );
   }
 
-  return <DecisionPanel data={data} />;
+  return (
+    <>
+      <div style={{ maxWidth: '920px', margin: '0 auto 1rem auto' }}>
+        {weatherCredibility && (
+          <DataCredibilityCard title="WEATHER FEED" metadata={weatherCredibility} thresholdMinutes={30} />
+        )}
+        {warningsCredibility && (
+          <DataCredibilityCard title="WARNINGS FEED" metadata={warningsCredibility} thresholdMinutes={15} />
+        )}
+        {radarCredibility && (
+          <DataCredibilityCard title="RADAR FEED" metadata={radarCredibility} thresholdMinutes={15} />
+        )}
+      </div>
+      <DecisionPanel data={data} />
+    </>
+  );
 }

@@ -1,5 +1,7 @@
 /** Warning types — normalized from BOM RSS/CAP */
 
+import type { DataCredibilityMeta } from './wx.types';
+
 export type WarningSeverity = 'EXTREME' | 'SEVERE' | 'MODERATE' | 'MINOR' | 'UNKNOWN';
 export type WarningType = 'STORM' | 'FLOOD' | 'FIRE' | 'WIND' | 'HEAT' | 'FROST' | 'OTHER';
 
@@ -20,4 +22,5 @@ export interface WarningsData {
   activeCount: number;
   highestSeverity: WarningSeverity | null;
   fetchedAt: string;
+  credibility?: DataCredibilityMeta;
 }
