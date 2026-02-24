@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'HMFFCC — Heavens Meadow Farm Flight Command Centre',
-  description: 'Aviation and farm operations command centre. Tyabb, VIC.',
+  description: 'Peter Moran\'s aviation and farm operations command centre. Tyabb, VIC.',
   manifest: '/manifest.json',
   icons: { apple: '/icons/icon-192.png' },
 };

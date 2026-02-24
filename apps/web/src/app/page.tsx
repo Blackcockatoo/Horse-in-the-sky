@@ -11,6 +11,7 @@ import type { WarningsData } from '../types/warning.types';
 import DecisionPanel from '../components/DecisionPanel';
 import AutoRefresh from '../components/AutoRefresh';
 import OfficialSafetyLinks from '../components/OfficialSafetyLinks';
+import PersonalStatusBar from '../components/PersonalStatusBar';
 
 type WeatherApiResponse = {
   farm?: WeatherData;
@@ -127,6 +128,7 @@ export default function Dashboard() {
   return (
     <>
       <OfficialSafetyLinks />
+      <PersonalStatusBar />
       <DecisionPanel data={data} />
       <AutoRefresh />
     </>

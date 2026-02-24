@@ -53,6 +53,7 @@ nav {
   letter-spacing: 0.15em;
 }
 
+
 .nav-links {
   display: flex;
   gap: 0;
@@ -129,6 +130,7 @@ button, a, input, select {
     padding: 0.75rem 0.5rem;
     font-size: 0.75rem;
   }
+
 
   .main-content {
     padding: 0.75rem;
