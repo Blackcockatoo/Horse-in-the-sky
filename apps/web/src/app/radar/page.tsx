@@ -5,10 +5,21 @@
  * No clutter. Just the radar.
  */
 
+import { useEffect, useState } from 'react';
 import RadarLoop from '../../components/RadarLoop';
 import { RADAR_URLS } from '../../server/providers/bom.provider';
 
 export default function RadarPage() {
+  const [data, setData] = useState<RadarApiResponse | null>(null);
+
+  useEffect(() => {
+    fetch('/api/radar').then(r => r.json()).then(setData).catch(console.error);
+    const interval = setInterval(() => {
+      fetch('/api/radar').then(r => r.json()).then(setData).catch(console.error);
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <h1 style={{

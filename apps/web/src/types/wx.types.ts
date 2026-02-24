@@ -1,5 +1,15 @@
 /** Weather data types — normalized from OpenMeteo */
 
+export type DataFeedStatus = 'live' | 'stale' | 'fallback' | 'error';
+
+export interface DataCredibilityMeta {
+  source: string;
+  sourceUrl: string;
+  fetchedAt: string;
+  status: DataFeedStatus;
+  ageMinutes: number;
+}
+
 export interface CurrentWeather {
   tempC: number;
   dewpointC: number;

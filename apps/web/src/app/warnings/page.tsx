@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import type { WarningsData, Warning } from '../../types/warning.types';
 import { formatDateTime } from '../../lib/time';
+import DataCredibilityCard from '../../components/DataCredibilityCard';
 
 const SEVERITY_COLORS: Record<string, string> = {
   EXTREME: '#ff1744',
@@ -54,6 +55,10 @@ export default function WarningsPage() {
       }}>
         ACTIVE WARNINGS — VICTORIA
       </h1>
+
+      {data.credibility && (
+        <DataCredibilityCard title="WARNINGS FEED" metadata={data.credibility} thresholdMinutes={15} />
+      )}
 
       {sorted.length === 0 ? (
         <div style={{
