@@ -53,6 +53,21 @@ nav {
   letter-spacing: 0.15em;
 }
 
+.nav-brand-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+}
+
+.nav-owner {
+  font-family: monospace;
+  font-size: 0.58rem;
+  color: #777;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
 .nav-links {
   display: flex;
   gap: 0;
@@ -128,6 +143,10 @@ button, a, input, select {
   .nav-links a {
     padding: 0.75rem 0.5rem;
     font-size: 0.75rem;
+  }
+
+  .nav-owner {
+    display: none;
   }
 
   .main-content {
