@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import NavClock from '../components/NavClock';
 
 export const metadata: Metadata = {
   title: 'HMFFCC — Heavens Meadow Farm Flight Command Centre',
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/" className="nav-brand">HMFFCC</a>
               <div className="nav-owner">PETER MORAN · FLIGHT + FARM</div>
             </div>
-            <div className="nav-links">
+            <div className="nav-right">
+              <NavClock />
+              <div className="nav-links">
               <a href="/">CMD</a>
               <a href="/flight">FLIGHT</a>
               <a href="/farm">FARM</a>
@@ -34,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/warnings">WARN</a>
               <a href="/logs">LOG</a>
               <a href="/settings">SET</a>
+              </div>
             </div>
           </div>
         </nav>

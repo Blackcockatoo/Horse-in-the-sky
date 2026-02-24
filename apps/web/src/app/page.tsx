@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react';
+import type { DecisionData } from '../components/DecisionPanel';
 import type { DataCredibilityMeta, WeatherData } from '../types/wx.types';
 import type { WarningsData } from '../types/warning.types';
 import DecisionPanel from '../components/DecisionPanel';
@@ -30,7 +31,7 @@ type RadarApiResponse = {
 };
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<DecisionData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [weatherCredibility, setWeatherCredibility] = useState<DataCredibilityMeta | null>(null);
@@ -46,9 +47,12 @@ export default function Dashboard() {
         fetch('/api/radar'),
       ]);
 
-      if (!decisionRes.ok) throw new Error(`${decisionRes.status}`);
+      if (!decisionRes.ok || !weatherRes.ok || !warningsRes.ok || !radarRes.ok) {
+        throw new Error(`API error: decision=${decisionRes.status}, weather=${weatherRes.status}, warnings=${warningsRes.status}, radar=${radarRes.status}`);
+      }
+
       const [decisionJson, weatherJson, warningsJson, radarJson] = await Promise.all([
-        decisionRes.json(),
+        decisionRes.json() as Promise<DecisionData>,
         weatherRes.json() as Promise<WeatherApiResponse>,
         warningsRes.json() as Promise<WarningsApiResponse>,
         radarRes.json() as Promise<RadarApiResponse>,
