@@ -36,7 +36,7 @@ export default function OfficialSafetyLinks() {
       <div style={{
         fontFamily: 'monospace',
         letterSpacing: '0.08em',
-        fontWeight: 800,
+        fontWeight: 700,
         color: '#ffe100',
         marginBottom: '0.6rem',
       }}>
@@ -54,13 +54,13 @@ export default function OfficialSafetyLinks() {
               display: 'block',
               border: '1px solid #2f2f2f',
               borderRadius: '8px',
-              padding: '0.9rem 1rem',
+              padding: '0.55rem 0.7rem',
               textDecoration: 'none',
               color: '#ddd',
             }}
           >
-            <div style={{ fontWeight: 800, marginBottom: '0.35rem', fontSize: '1.05rem', lineHeight: 1.35 }}>{link.label}</div>
-            <div style={{ fontSize: '0.95rem', color: '#b0b0b0', lineHeight: 1.45 }}>{link.note}</div>
+            <div style={{ fontWeight: 700, marginBottom: '0.2rem' }}>{link.label}</div>
+            <div style={{ fontSize: '0.8rem', color: '#999' }}>{link.note}</div>
           </a>
         ))}
       </div>
