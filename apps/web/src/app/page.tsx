@@ -47,21 +47,29 @@ export default function Dashboard() {
         fetch('/api/radar'),
       ]);
 
-      if (!decisionRes.ok || !weatherRes.ok || !warningsRes.ok || !radarRes.ok) {
-        throw new Error(`API error: decision=${decisionRes.status}, weather=${weatherRes.status}, warnings=${warningsRes.status}, radar=${radarRes.status}`);
+      if (!decisionRes.ok) {
+        throw new Error(`API error: decision=${decisionRes.status}`);
       }
 
-      const [decisionJson, weatherJson, warningsJson, radarJson] = await Promise.all([
-        decisionRes.json() as Promise<DecisionData>,
+      const decisionJson = await (decisionRes.json() as Promise<DecisionData>);
+
+      const [weatherResult, warningsResult, radarResult] = await Promise.allSettled([
         weatherRes.json() as Promise<WeatherApiResponse>,
         warningsRes.json() as Promise<WarningsApiResponse>,
         radarRes.json() as Promise<RadarApiResponse>,
       ]);
 
       setData(decisionJson);
-      if (weatherJson.credibility) setWeatherCredibility(weatherJson.credibility);
-      if (warningsJson.credibility) setWarningsCredibility(warningsJson.credibility);
-      if (radarJson.credibility) setRadarCredibility(radarJson.credibility);
+
+      if (weatherResult.status === 'fulfilled' && weatherResult.value.credibility) {
+        setWeatherCredibility(weatherResult.value.credibility);
+      }
+      if (warningsResult.status === 'fulfilled' && warningsResult.value.credibility) {
+        setWarningsCredibility(warningsResult.value.credibility);
+      }
+      if (radarResult.status === 'fulfilled' && radarResult.value.credibility) {
+        setRadarCredibility(radarResult.value.credibility);
+      }
       setError(null);
     } catch (err) {
       setError('Failed to fetch data. Retrying...');
