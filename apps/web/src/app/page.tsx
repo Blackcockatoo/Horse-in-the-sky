@@ -83,65 +83,7 @@ export default function Dashboard() {
       <OfficialSafetyLinks />
       <PersonalStatusBar />
       <IntroDownloadCard />
-
-      {loading && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '20vh',
-          color: '#9fb2d7',
-          fontSize: '1.05rem',
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          padding: '0.8rem',
-        }}>
-          Pulling weather, radar, warnings...
-        </div>
-      )}
-
-      {!loading && error && !data && (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '20vh',
-          color: '#ffd27a',
-          fontSize: '1rem',
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          padding: '1rem',
-          border: '1px solid #5f4d2a',
-          borderRadius: '10px',
-          background: 'rgba(35, 24, 10, 0.45)',
-          marginBottom: '1rem',
-        }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '0.35rem' }}>!</div>
-          <div>{error}</div>
-          <button
-            onClick={() => {
-              setLoading(true);
-              fetchData();
-            }}
-            style={{
-              marginTop: '0.75rem',
-              background: '#f7d548',
-              color: '#0a2f70',
-              border: '1px solid #f7d548',
-              borderRadius: '8px',
-              padding: '0.6rem 1rem',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              fontWeight: 700,
-            }}
-          >
-            RETRY LIVE DATA
-          </button>
-        </div>
-      )}
-
-      {data && <DecisionPanel data={data} />}
+      <DecisionPanel data={data} />
       <AutoRefresh />
     </>
   );
