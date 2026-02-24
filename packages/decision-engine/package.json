@@ -1,0 +1,14 @@
+{
+  "name": "@hmffcc/decision-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test src/__tests__/*.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

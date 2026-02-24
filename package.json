@@ -1,0 +1,15 @@
+{
+  "name": "farm-flight-command-center",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build:engine && npm run build:web",
+    "build:engine": "npm run build --workspace=packages/decision-engine",
+    "build:web": "npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web"
+  }
+}
