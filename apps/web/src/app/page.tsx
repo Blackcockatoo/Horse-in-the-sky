@@ -13,6 +13,7 @@ import DecisionPanel from '../components/DecisionPanel';
 import AutoRefresh from '../components/AutoRefresh';
 import OfficialSafetyLinks from '../components/OfficialSafetyLinks';
 import PersonalStatusBar from '../components/PersonalStatusBar';
+import IntroDownloadCard from '../components/IntroDownloadCard';
 
 type WeatherApiResponse = {
   farm?: WeatherData;
@@ -133,6 +134,7 @@ export default function Dashboard() {
     <>
       <OfficialSafetyLinks />
       <PersonalStatusBar />
+      <IntroDownloadCard />
       <DecisionPanel data={data} />
       <AutoRefresh />
     </>
