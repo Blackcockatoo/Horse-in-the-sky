@@ -1,0 +1,261 @@
+Sweet. Here’s the **spectacular repo scaffold** with **real, Australia/VIC/Tyabb-ready data hooks** (radar, forecast, warnings, aviation, tracking, logbooks, farm ops). You can paste this into a fresh GitHub repo and start wiring immediately.
+
+---
+
+## Repo: `farm-flight-command-center`
+
+### Monorepo layout (so logic stays pure, UI stays pretty)
+
+```txt
+farm-flight-command-center/
+├── apps/
+│   └── web/                         # Next.js app (PWA)
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── page.tsx                 # Dashboard
+│       │   │   ├── radar/page.tsx
+│       │   │   ├── warnings/page.tsx
+│       │   │   ├── flight/page.tsx
+│       │   │   ├── farm/page.tsx
+│       │   │   ├── logs/page.tsx
+│       │   │   └── settings/page.tsx
+│       │   │
+│       │   ├── server/                      # server-only (keys live here)
+│       │   │   ├── routes/
+│       │   │   │   ├── wx.route.ts          # forecast aggregator
+│       │   │   │   ├── radar.route.ts       # radar frames/loop
+│       │   │   │   ├── warnings.route.ts    # BOM RSS/CAP ingest
+│       │   │   │   ├── aviation.route.ts    # Airservices hooks
+│       │   │   │   └── tracking.route.ts    # ADS-B hooks
+│       │   │   └── providers/
+│       │   │       ├── openmeteo.provider.ts
+│       │   │       ├── bom.provider.ts
+│       │   │       ├── airservices.provider.ts
+│       │   │       └── adsb.provider.ts
+│       │   │
+│       │   ├── components/
+│       │   │   ├── DecisionPanel.tsx
+│       │   │   ├── RunwayWindCard.tsx
+│       │   │   ├── RadarLoop.tsx
+│       │   │   ├── WarningBanner.tsx
+│       │   │   ├── LogbookQuickAdd.tsx
+│       │   │   └── FarmOpsCard.tsx
+│       │   │
+│       │   ├── lib/
+│       │   │   ├── config.ts                # your pinned coords + runway set
+│       │   │   ├── units.ts
+│       │   │   └── time.ts
+│       │   │
+│       │   └── types/
+│       │       ├── wx.types.ts
+│       │       ├── warning.types.ts
+│       │       ├── aviation.types.ts
+│       │       └── tracking.types.ts
+│       │
+│       ├── public/
+│       │   ├── icons/
+│       │   └── manifest.json
+│       ├── .env.example
+│       └── package.json
+│
+├── packages/
+│   └── decision-engine/              # pure math + rules, 100% testable
+│       ├── src/
+│       │   ├── derive.ts             # cloud base, crosswind, density alt
+│       │   ├── rules.flight.ts       # GO/CAUTION/NO-GO
+│       │   ├── rules.farm.ts         # spray/hay/frost etc
+│       │   └── index.ts
+│       └── package.json
+│
+├── infra/
+│   ├── supabase.sql                  # logbooks + tasks schema
+│   └── vercel.json
+│
+├── reference/                        # “don’t forget” binder
+│   ├── locations.json
+│   ├── runways.json
+│   ├── endpoints.md                  # all URLs + notes (below)
+│   └── field-notes.md                # your future self will thank you
+│
+├── README.md
+└── .gitignore
+```
+
+---
+
+## `reference/locations.json` (your pins, normalized)
+
+```json
+{
+  "farm": { "lat": -38.31293611, "lon": 145.12356944, "elevation_m": 81.5 },
+  "plane": { "lat": -38.26221944, "lon": 145.18060000, "elevation_m": 23.03 },
+  "tyabb": { "icao": "YTYA", "lat": -38.2668, "lon": 145.1794, "elevation_m": 26.8 }
+}
+```
+
+## `reference/runways.json`
+
+```json
+{
+  "YTYA": {
+    "runways": [
+      { "id": "17", "heading_deg": 170 },
+      { "id": "35", "heading_deg": 350 },
+      { "id": "08", "heading_deg": 80 },
+      { "id": "26", "heading_deg": 260 }
+    ]
+  }
+}
+```
+
+*(Nominal headings are enough for crosswind math; refine later from AIP if you want.)*
+
+---
+
+# `reference/endpoints.md` — REAL HOOKS (VIC/Tyabb ready)
+
+## 1) Forecast (clean JSON, no scraping)
+
+### Open-Meteo `/v1/forecast`
+
+Use model: **ACCESS-G (BOM)** is listed as available via Open-Meteo. ([Open Meteo][1])
+You’ll call it twice: **farm pin** + **plane/tyabb pin**.
+
+**Example shape**
+
+* `latitude`, `longitude`
+* `hourly=temperature_2m,dewpoint_2m,precipitation,wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl,cloud_cover`
+* `timezone=Australia/Melbourne`
+
+(Open-Meteo docs are the canonical reference for variables + endpoint.) ([Open Meteo][1])
+
+---
+
+## 2) Radar (BOM Melbourne radar loop)
+
+BOM radar site table shows Melbourne radar products (64/128/256/512 etc.). ([Bureau of Meteorology][2])
+
+### Melbourne 256 km loop (product `IDR022`)
+
+* Loop page exists at: `.../products/IDR022.loop.shtml` ([Bureau of Meteorology][3])
+
+### Melbourne 128 km 5-min rainfall loop (`IDR02A`)
+
+* `.../products/IDR02A.loop.shtml` ([Bureau of Meteorology][4])
+
+**Implementation move:** in your app, don’t “scrape pixels”. Just embed the loop page in an iframe *or* fetch the underlying images via BOM’s public products/FTP approach when you’re ready to do it properly. BOM publishes public product access guidance via its FTP products page. ([Bureau of Meteorology][5])
+
+---
+
+## 3) Warnings (your “SAS disaster warnings”)
+
+### BOM RSS feeds (easy win)
+
+BOM provides state-based warning RSS/XML feeds and lists them here. ([Bureau of Meteorology][6])
+
+**Victoria warning feed URLs discovered from BOM’s RSS catalogue:**
+
+* VIC **All warnings**: `https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml` 
+* VIC **Land warnings**: `https://www.bom.gov.au/fwo/IDZ00066.warnings_land_vic.xml` 
+
+(Your backend should poll these and emit a clean JSON list: severity, headline, areas, effective time.)
+
+### CAP-AU (standards-based “real emergency messaging”)
+
+BOM maintains CAP-AU profile information. ([Bureau of Meteorology][7])
+Australia’s CAP-AU dataset reference is also published via data.gov.au. ([Data.gov.au][8])
+
+**Implementation move:** Support CAP parsing in `warnings.provider.ts` even if you start with RSS. Your UI won’t care—same normalized output.
+
+---
+
+## 4) Aviation briefing (NAIPS / NOTAM / OPMET)
+
+Airservices provides NAIPS-related “Flight Briefing Data” via **Data.Airservices**. ([Airservices Australia Data][9])
+They publish Swagger/OpenAPI docs for their APIs. ([Airservices Australia Data][10])
+
+**Implementation move:** keep this server-only (keys + terms). Your app’s “Flight” tab can show:
+
+* Briefing snapshot
+* NOTAM list
+* Weather summary
+  …and stamp a “briefing snapshot” into the logbook.
+
+---
+
+## 5) Plane tracking (ADS-B)
+
+### OpenSky (global ADS-B, documented)
+
+Root REST URL and “state vectors” endpoints are documented here. ([Open Sky Network][11])
+Use this if you have the plane’s ICAO hex / registration mapping.
+
+### ADSBexchange (straightforward endpoints)
+
+They publish sample REST endpoints, including:
+
+* Aircraft around a point: `/api/aircraft/lat/<lat>/lon/<lon>/dist/<nm>`
+* Aircraft by Mode-S ICAO: `/api/aircraft/icao/<hex>` ([ADS-B Exchange][12])
+
+**Implementation move:** start with **“aircraft around Tyabb + your plane pin”** then tighten to “by ICAO hex” once you have it.
+
+---
+
+# `.env.example` (keep secrets off the client)
+
+```bash
+# Forecast
+OPENMETEO_BASE=https://api.open-meteo.com/v1/forecast
+
+# BOM Radar (use loop pages or image base later)
+BOM_MELB_256_LOOP=https://www.bom.gov.au/products/IDR022.loop.shtml
+BOM_MELB_128_5MIN_LOOP=https://www.bom.gov.au/products/IDR02A.loop.shtml
+
+# BOM Warnings (VIC)
+BOM_WARN_VIC_ALL=https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml
+BOM_WARN_VIC_LAND=https://www.bom.gov.au/fwo/IDZ00066.warnings_land_vic.xml
+
+# Airservices (if/when you enable)
+AIRSERVICES_API_KEY=
+
+# Tracking
+ADSBEXCHANGE_API_KEY=
+OPENSKY_USERNAME=
+OPENSKY_PASSWORD=
+
+# Storage
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+```
+
+---
+
+## The one missing piece (and it’s important)
+
+For “plane tracking” that’s *his* aircraft specifically, you’ll want:
+
+* the aircraft **ICAO hex** (Mode-S) *or* registration-to-hex mapping.
+
+Once you have that, your tracking tab becomes magical instead of “list of nearby blips”.
+
+---
+
+If you want, I’ll now generate:
+
+1. a proper `reference/endpoints.md` filled out exactly like above (clean + complete), and
+2. the initial server route stubs (`warnings.route.ts`, `radar.route.ts`, `wx.route.ts`) returning normalized JSON.
+
+Just say the word and tell me: **Next.js App Router or Vite + React Router?**
+
+[1]: https://open-meteo.com/en/docs?utm_source=chatgpt.com "️ Docs | Open-Meteo.com"
+[2]: https://www.bom.gov.au/australia/radar/vic_radar_sites_table.shtml "VIC Radar Sites Table"
+[3]: https://www.bom.gov.au/products/IDR022.loop.shtml "Rain radar and weather maps | The Bureau of Meteorology"
+[4]: https://www.bom.gov.au/products/IDR02A.loop.shtml "128 km Melbourne 5 min Rainfalls"
+[5]: https://www.bom.gov.au/catalogue/anon-ftp.shtml "FTP Public products"
+[6]: https://www.bom.gov.au/rss/ "Bureau of Meteorology RSS Feeds"
+[7]: https://www.bom.gov.au/metadata/CAP-AU/About.shtml?utm_source=chatgpt.com "CAP-AU ( Common Alerting Protocol : Australian Profile )- About"
+[8]: https://data.gov.au/data/dataset/03a32b0a-4f6c-46aa-9103-7d24f7f34f70?utm_source=chatgpt.com "Common Alerting Protocol - Australia ( CAP-AU-STD ) - warnings data ..."
+[9]: https://data.airservicesaustralia.com/?utm_source=chatgpt.com "Data.Airservices | Data.Airservices"
+[10]: https://data.airservicesaustralia.com/api-documentation?utm_source=chatgpt.com "API Documentation | Data.Airservices"
+[11]: https://openskynetwork.github.io/opensky-api/rest.html?utm_source=chatgpt.com "OpenSky REST API — The OpenSky Network API 1.4.0 documentation"
+[12]: https://www.adsbexchange.com/data/rest-api-samples/?utm_source=chatgpt.com "REST API Information - ADS-B Exchange"
