@@ -9,6 +9,7 @@ import { useEffect, useState, useCallback } from 'react';
 import type { WarningsData, Warning } from '../../types/warning.types';
 import { formatDateTime } from '../../lib/time';
 import DataCredibilityCard from '../../components/DataCredibilityCard';
+import RefreshControls from '../../components/RefreshControls';
 
 const SEVERITY_COLORS: Record<string, string> = {
   EXTREME: '#ff1744',

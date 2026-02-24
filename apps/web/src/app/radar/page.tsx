@@ -6,8 +6,18 @@
  */
 
 import { useEffect, useState } from 'react';
+import type { DataCredibilityMeta } from '../../types/wx.types';
 import RadarLoop from '../../components/RadarLoop';
 import { RADAR_URLS } from '../../server/providers/bom.provider';
+import AutoRefresh from '../../components/AutoRefresh';
+
+type RadarApiResponse = {
+  urls: {
+    melbourne256: string;
+    melbourne128: string;
+  };
+  credibility?: DataCredibilityMeta;
+};
 
 export default function RadarPage() {
   const [data, setData] = useState<RadarApiResponse | null>(null);
