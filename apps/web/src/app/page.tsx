@@ -6,8 +6,27 @@
  */
 
 import { useEffect, useState, useCallback } from 'react';
+import type { DataCredibilityMeta, WeatherData } from '../types/wx.types';
+import type { WarningsData } from '../types/warning.types';
 import DecisionPanel from '../components/DecisionPanel';
 import AutoRefresh from '../components/AutoRefresh';
+import OfficialSafetyLinks from '../components/OfficialSafetyLinks';
+
+type WeatherApiResponse = {
+  farm?: WeatherData;
+  airport?: WeatherData;
+  credibility?: DataCredibilityMeta;
+};
+
+type WarningsApiResponse = WarningsData;
+
+type RadarApiResponse = {
+  urls: {
+    melbourne256: string;
+    melbourne128: string;
+  };
+  credibility?: DataCredibilityMeta;
+};
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -107,6 +126,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <OfficialSafetyLinks />
       <DecisionPanel data={data} />
       <AutoRefresh />
     </>
