@@ -19,16 +19,17 @@ interface RadarLoopProps {
 export default function RadarLoop({ urls }: RadarLoopProps) {
   const [view, setView] = useState<'256' | '128'>('256');
 
-  const url = view === '256' ? RADAR_URLS.melbourne256 : RADAR_URLS.melbourne128;
-  const sourceUrl = RADAR_URLS.melbourne256;
+  const radarUrls = urls ?? RADAR_URLS;
+  const url = view === '256' ? radarUrls.melbourne256 : radarUrls.melbourne128;
+  const sourceUrl = radarUrls.melbourne256;
   const sourceLinkStyle = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '44px',
+    minHeight: '52px',
     padding: '0.5rem 0.75rem',
     color: '#8ec5ff',
-    fontSize: '0.95rem',
+    fontSize: '1.05rem',
     fontWeight: 700,
     textDecoration: 'underline',
     textUnderlineOffset: '0.2em',
@@ -48,7 +49,7 @@ export default function RadarLoop({ urls }: RadarLoopProps) {
         padding: '0.75rem 1rem',
         borderBottom: '1px solid #333',
       }}>
-        <div style={{ fontSize: '0.85rem', color: '#888', fontWeight: 700, letterSpacing: '0.15em' }}>
+        <div style={{ fontSize: '1rem', color: '#888', fontWeight: 700, letterSpacing: '0.15em' }}>
           MELBOURNE RADAR
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -66,9 +67,9 @@ export default function RadarLoop({ urls }: RadarLoopProps) {
               background: view === '256' ? '#333' : 'transparent',
               color: view === '256' ? '#fff' : '#888',
               border: '1px solid #555',
-              borderRadius: '4px',
-              padding: '0.25rem 0.75rem',
-              fontSize: '0.85rem',
+              borderRadius: '8px',
+              padding: '0.6rem 1rem',
+              fontSize: '1rem',
               cursor: 'pointer',
               fontWeight: 700,
             }}
@@ -81,9 +82,9 @@ export default function RadarLoop({ urls }: RadarLoopProps) {
               background: view === '128' ? '#333' : 'transparent',
               color: view === '128' ? '#fff' : '#888',
               border: '1px solid #555',
-              borderRadius: '4px',
-              padding: '0.25rem 0.75rem',
-              fontSize: '0.85rem',
+              borderRadius: '8px',
+              padding: '0.6rem 1rem',
+              fontSize: '1rem',
               cursor: 'pointer',
               fontWeight: 700,
             }}
@@ -104,7 +105,8 @@ export default function RadarLoop({ urls }: RadarLoopProps) {
             border: 'none',
           }}
           title="BOM Radar Loop"
-          loading="lazy"
+          key={view}
+          loading="eager"
         />
       </div>
       <div style={{

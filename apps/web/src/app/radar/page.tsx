@@ -6,8 +6,18 @@
  */
 
 import { useEffect, useState } from 'react';
+import type { DataCredibilityMeta } from '../../types/wx.types';
 import RadarLoop from '../../components/RadarLoop';
 import { RADAR_URLS } from '../../server/providers/bom.provider';
+import AutoRefresh from '../../components/AutoRefresh';
+
+type RadarApiResponse = {
+  urls: {
+    melbourne256: string;
+    melbourne128: string;
+  };
+  credibility?: DataCredibilityMeta;
+};
 
 export default function RadarPage() {
   const [data, setData] = useState<RadarApiResponse | null>(null);
@@ -41,11 +51,11 @@ export default function RadarPage() {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '48px',
-            padding: '0.75rem 1rem',
+            minHeight: '58px',
+            padding: '0.95rem 1.25rem',
             background: '#ffe100',
             color: '#111',
-            fontSize: '1rem',
+            fontSize: '1.1rem',
             fontWeight: 800,
             borderRadius: '8px',
             textDecoration: 'none',
@@ -55,7 +65,7 @@ export default function RadarPage() {
           Open BOM Radar
         </a>
       </div>
-      <RadarLoop />
+      <RadarLoop urls={data?.urls} />
       <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#555', textAlign: 'center' }}>
         Source: Bureau of Meteorology | Auto-refreshes with BOM loop
       </div>

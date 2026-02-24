@@ -9,6 +9,8 @@ import { useEffect, useState, useCallback } from 'react';
 import type { WarningsData, Warning } from '../../types/warning.types';
 import { formatDateTime } from '../../lib/time';
 import DataCredibilityCard from '../../components/DataCredibilityCard';
+import RefreshControls from '../../components/RefreshControls';
+import OfficialSafetyLinks from '../../components/OfficialSafetyLinks';
 
 const SEVERITY_COLORS: Record<string, string> = {
   EXTREME: '#ff1744',
@@ -64,6 +66,8 @@ export default function WarningsPage() {
       {data.credibility && (
         <DataCredibilityCard title="WARNINGS FEED" metadata={data.credibility} thresholdMinutes={15} />
       )}
+
+      <OfficialSafetyLinks />
 
       {sorted.length === 0 ? (
         <div style={{
