@@ -33,10 +33,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/">CMD</a>
               <a href="/flight">FLIGHT</a>
               <a href="/farm">FARM</a>
-              <a href="/radar">RADAR</a>
-              <a href="/warnings">WARN</a>
+              <a href="/inventory">STOCK</a>
+              <a href="/tasks">TODO</a>
+              <a href="/alerts">ALERTS</a>
               <a href="/logs">LOG</a>
-              <a href="/settings">SET</a>
               </div>
             </div>
           </div>

@@ -46,6 +46,17 @@ nav {
   z-index: 100;
 }
 
+@media (max-width: 768px) {
+  nav {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    border-bottom: none;
+    border-top: 1px solid #333;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 .nav-inner {
   display: flex;
   align-items: center;
@@ -116,6 +127,10 @@ nav {
   letter-spacing: 0.1em;
   transition: color 0.15s;
   min-width: 44px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -131,6 +146,7 @@ nav {
   border-radius: 12px;
   margin: 0 auto;
   min-height: calc(100vh - 48px);
+  padding-bottom: 80px; /* Space for bottom nav on mobile */
 }
 
 /* Pulse animation for warnings */
@@ -176,7 +192,9 @@ button, a, input, select {
 
   .nav-links a {
     padding: 0.75rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
+    flex: 1;
+    min-width: 0;
   }
 
   .nav-owner {
@@ -198,8 +216,10 @@ button, a, input, select {
   }
 
   .nav-links a {
-    padding: 0.75rem 0.35rem;
-    font-size: 0.7rem;
+    padding: 0.75rem 0.25rem;
+    font-size: 0.6rem;
+    flex: 1;
+    min-width: 0;
   }
 }
 
