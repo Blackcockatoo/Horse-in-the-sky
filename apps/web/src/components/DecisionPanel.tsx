@@ -6,7 +6,7 @@
  * Binary first. Explanation second. No clutter.
  */
 
-import { formatTime, formatTimeRange } from '../lib/time';
+import { formatTime } from '../lib/time';
 
 type Verdict = 'GO' | 'CAUTION' | 'NO_GO';
 
@@ -29,7 +29,7 @@ interface SprayWindow {
   summary: string;
 }
 
-interface DecisionData {
+export interface DecisionData {
   updatedAt: string;
   flight: {
     now: {
