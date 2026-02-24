@@ -5,19 +5,20 @@
  * No clutter. Just the radar.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RadarLoop from '../../components/RadarLoop';
-import RefreshControls from '../../components/RefreshControls';
-import { formatDateTime } from '../../lib/time';
+import { RADAR_URLS } from '../../server/providers/bom.provider';
 
 export default function RadarPage() {
-  const [lastUpdated, setLastUpdated] = useState(() => new Date().toISOString());
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [data, setData] = useState<RadarApiResponse | null>(null);
 
-  const handleRefresh = () => {
-    setLastUpdated(new Date().toISOString());
-    setRefreshKey(prev => prev + 1);
-  };
+  useEffect(() => {
+    fetch('/api/radar').then(r => r.json()).then(setData).catch(console.error);
+    const interval = setInterval(() => {
+      fetch('/api/radar').then(r => r.json()).then(setData).catch(console.error);
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -31,11 +32,34 @@ export default function RadarPage() {
       }}>
         MELBOURNE RADAR
       </h1>
-      <RadarLoop key={refreshKey} />
-      <RefreshControls
-        lastUpdatedLabel={`Source: Bureau of Meteorology | Updated ${formatDateTime(lastUpdated)}`}
-        onRefresh={handleRefresh}
-      />
+      <div style={{ marginBottom: '1rem' }}>
+        <a
+          href={RADAR_URLS.melbourne256}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '48px',
+            padding: '0.75rem 1rem',
+            background: '#ffe100',
+            color: '#111',
+            fontSize: '1rem',
+            fontWeight: 800,
+            borderRadius: '8px',
+            textDecoration: 'none',
+            border: '2px solid #111',
+          }}
+        >
+          Open BOM Radar
+        </a>
+      </div>
+      <RadarLoop />
+      <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#555', textAlign: 'center' }}>
+        Source: Bureau of Meteorology | Auto-refreshes with BOM loop
+      </div>
+      <AutoRefresh />
     </div>
   );
 }
