@@ -22,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <nav>
           <div className="nav-inner">
-            <a href="/" className="nav-brand">HMFFCC</a>
+            <div className="nav-brand-group">
+              <a href="/" className="nav-brand">HMFFCC</a>
+              <div className="nav-owner">PETER MORAN · FLIGHT + FARM</div>
+            </div>
             <div className="nav-links">
               <a href="/">CMD</a>
               <a href="/flight">FLIGHT</a>
