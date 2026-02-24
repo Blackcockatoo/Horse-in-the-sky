@@ -30,13 +30,13 @@ export function bestRunway(
   windDir: number,
   windSpeed: number,
   runways: { id: string; heading_deg: number }[]
-): { id: string; headwind: number; crosswind: number } {
-  let best = { id: '', headwind: -Infinity, crosswind: Infinity };
+): { id: string; heading_deg: number; headwind: number; crosswind: number } {
+  let best = { id: '', heading_deg: 0, headwind: -Infinity, crosswind: Infinity };
   for (const rwy of runways) {
     const hw = headwindComponent(windDir, windSpeed, rwy.heading_deg);
     const xw = Math.abs(crosswindComponent(windDir, windSpeed, rwy.heading_deg));
     if (hw > best.headwind || (hw === best.headwind && xw < Math.abs(best.crosswind))) {
-      best = { id: rwy.id, headwind: hw, crosswind: xw };
+      best = { id: rwy.id, heading_deg: rwy.heading_deg, headwind: hw, crosswind: xw };
     }
   }
   return best;
