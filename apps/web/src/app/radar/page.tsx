@@ -48,6 +48,7 @@ export default function RadarPage() {
       <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#555', textAlign: 'center' }}>
         Source: Bureau of Meteorology | Auto-refreshes with BOM loop
       </div>
+      <AutoRefresh />
     </div>
   );
 }
