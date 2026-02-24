@@ -1,0 +1,34 @@
+Locked in. ✅
+
+From your screenshot, **Pete’s farm pin** is:
+
+* **Lat/Lon (DMS):** 38°18'50.11"S, 145°07'25.24"E
+* **Lat/Lon (decimal):** **-38.31391944, 145.12367778**
+* **Ground elevation:** **79.46 m**
+
+Use this as the *canonical* `farm_home` in your config (it slightly refines the earlier numbers).
+
+### Drop-in config snippet
+
+```json
+{
+  "pete": {
+    "age_years": 76,
+    "farm_home": { "lat": -38.31391944, "lon": 145.12367778, "elevation_m": 79.46 },
+    "plane_spot": { "lat": -38.26221944, "lon": 145.18060000, "elevation_m": 23.03 },
+    "airport": { "icao": "YTYA" }
+  }
+}
+```
+
+## Since he’s 76: make it “ends all apps” by being *effortless*
+
+Non-negotiables for the UI/UX:
+
+* **Big buttons** (thumb-sized), **huge type**, high contrast
+* “One screen truth”: **GO / CAUTION / NO-GO** for **Farm** and **Flight**
+* **Zero fiddling**: defaults that work, settings hidden behind a single “Adjust limits” page
+* **One-tap logging**: *Rain*, *Spray*, *Maintenance*, *Flight* — done in 3 seconds
+* Optional later: **voice notes** (“log: fixed fence line east paddock”)
+
+If you want, next I’ll update the scaffold’s `reference/locations.json` + generate a **`reference/pete-profile.md`** (clean, human-readable “binder page”) so you’ve got a single place to reference his pins, thresholds, runway prefs, and data sources.
