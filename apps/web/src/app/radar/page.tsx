@@ -10,6 +10,7 @@ import type { DataCredibilityMeta } from '../../types/wx.types';
 import RadarLoop from '../../components/RadarLoop';
 import { RADAR_URLS } from '../../server/providers/bom.provider';
 import AutoRefresh from '../../components/AutoRefresh';
+import PersonalStatusBar from '../../components/PersonalStatusBar';
 
 type RadarApiResponse = {
   urls: {
@@ -32,6 +33,7 @@ export default function RadarPage() {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <PersonalStatusBar />
       <h1 style={{
         fontSize: '1rem',
         color: '#888',
