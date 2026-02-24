@@ -13,6 +13,7 @@ import DecisionPanel from '../components/DecisionPanel';
 import AutoRefresh from '../components/AutoRefresh';
 import OfficialSafetyLinks from '../components/OfficialSafetyLinks';
 import PersonalStatusBar from '../components/PersonalStatusBar';
+import IntroDownloadCard from '../components/IntroDownloadCard';
 
 type WeatherApiResponse = {
   farm?: WeatherData;
@@ -64,7 +65,7 @@ export default function Dashboard() {
       if (radarJson.credibility) setRadarCredibility(radarJson.credibility);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch data. Retrying...');
+      setError('Failed to fetch live data right now. You can still install the app below.');
       console.error('Dashboard fetch error:', err);
     } finally {
       setLoading(false);
@@ -77,63 +78,70 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '80vh',
-        color: '#888',
-        fontSize: '1.3rem',
-        fontFamily: 'monospace',
-      }}>
-        Pulling weather, radar, warnings...
-      </div>
-    );
-  }
-
-  if (error && !data) {
-    return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '80vh',
-        color: '#ff6d00',
-        fontSize: '1.1rem',
-        fontFamily: 'monospace',
-        textAlign: 'center',
-        padding: '2rem',
-      }}>
-        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>!</div>
-        <div>{error}</div>
-        <button
-          onClick={() => { setLoading(true); fetchData(); }}
-          style={{
-            marginTop: '1.5rem',
-            background: '#333',
-            color: '#e0e0e0',
-            border: '1px solid #555',
-            borderRadius: '8px',
-            padding: '0.75rem 2rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            fontWeight: 700,
-          }}
-        >
-          RETRY
-        </button>
-      </div>
-    );
-  }
-
   return (
     <>
       <OfficialSafetyLinks />
       <PersonalStatusBar />
-      <DecisionPanel data={data} />
+      <IntroDownloadCard />
+
+      {loading && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '20vh',
+          color: '#9fb2d7',
+          fontSize: '1.05rem',
+          fontFamily: 'monospace',
+          textAlign: 'center',
+          padding: '0.8rem',
+        }}>
+          Pulling weather, radar, warnings...
+        </div>
+      )}
+
+      {!loading && error && !data && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '20vh',
+          color: '#ffd27a',
+          fontSize: '1rem',
+          fontFamily: 'monospace',
+          textAlign: 'center',
+          padding: '1rem',
+          border: '1px solid #5f4d2a',
+          borderRadius: '10px',
+          background: 'rgba(35, 24, 10, 0.45)',
+          marginBottom: '1rem',
+        }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '0.35rem' }}>!</div>
+          <div>{error}</div>
+          <button
+            onClick={() => {
+              setLoading(true);
+              fetchData();
+            }}
+            style={{
+              marginTop: '0.75rem',
+              background: '#f7d548',
+              color: '#0a2f70',
+              border: '1px solid #f7d548',
+              borderRadius: '8px',
+              padding: '0.6rem 1rem',
+              fontSize: '0.95rem',
+              cursor: 'pointer',
+              fontWeight: 700,
+            }}
+          >
+            RETRY LIVE DATA
+          </button>
+        </div>
+      )}
+
+      {data && <DecisionPanel data={data} />}
       <AutoRefresh />
     </>
   );
