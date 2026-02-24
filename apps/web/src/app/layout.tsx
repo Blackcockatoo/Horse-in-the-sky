@@ -18,8 +18,6 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const productionBuildMarker = process.env.NEXT_PUBLIC_MOSS60 || process.env.MOSS60;
-
   return (
     <html lang="en">
       <body>
@@ -46,9 +44,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="main-content">
           {children}
         </main>
-        {productionBuildMarker ? (
-          <div data-moss60={productionBuildMarker} style={{ display: 'none' }} aria-hidden="true" />
-        ) : null}
       </body>
     </html>
   );
