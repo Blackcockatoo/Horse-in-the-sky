@@ -10,6 +10,7 @@ import type { DataCredibilityMeta, WeatherData } from '../types/wx.types';
 import type { WarningsData } from '../types/warning.types';
 import DecisionPanel from '../components/DecisionPanel';
 import AutoRefresh from '../components/AutoRefresh';
+import OfficialSafetyLinks from '../components/OfficialSafetyLinks';
 
 type WeatherApiResponse = {
   farm?: WeatherData;
@@ -125,6 +126,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <OfficialSafetyLinks />
       <DecisionPanel data={data} />
       <AutoRefresh />
     </>
