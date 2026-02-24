@@ -5,9 +5,10 @@
  * Runway winds, density altitude, flight windows.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import RunwayWindCard from '../../components/RunwayWindCard';
-import { formatTime } from '../../lib/time';
+import RefreshControls from '../../components/RefreshControls';
+import { formatDateTime, formatTime } from '../../lib/time';
 
 type Verdict = 'GO' | 'CAUTION' | 'NO_GO';
 
@@ -26,12 +27,19 @@ const VERDICT_LABELS: Record<Verdict, string> = {
 export default function FlightPage() {
   const [data, setData] = useState<Record<string, unknown> | null>(null);
 
-  useEffect(() => {
-    fetch('/api/decision')
-      .then(r => r.json())
-      .then(setData)
-      .catch(console.error);
+  const fetchFlightData = useCallback(async () => {
+    try {
+      const response = await fetch('/api/decision');
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchFlightData();
+  }, [fetchFlightData]);
 
   if (!data) {
     return <div style={{ padding: '2rem', color: '#888', fontFamily: 'monospace' }}>Loading flight data...</div>;
@@ -54,6 +62,7 @@ export default function FlightPage() {
   const weather = data.weather as {
     airport: { windSpeedKmh: number; windGustKmh: number; windDirectionDeg: number; tempC: number; dewpointC: number; pressureHpa: number };
   };
+  const updatedAt = data.updatedAt as string | undefined;
 
   const checks = [
     { label: 'Wind', ...flight.now.wind },
@@ -192,6 +201,11 @@ export default function FlightPage() {
           ))}
         </div>
       )}
+
+      <RefreshControls
+        lastUpdatedLabel={`Updated ${updatedAt ? formatDateTime(updatedAt) : 'N/A'} | Flight assessment`}
+        onRefresh={fetchFlightData}
+      />
     </div>
   );
 }
