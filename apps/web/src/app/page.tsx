@@ -7,20 +7,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import DecisionPanel from '../components/DecisionPanel';
-import DataCredibilityCard from '../components/DataCredibilityCard';
-import type { DataCredibilityMeta } from '../types/wx.types';
-
-interface WarningsApiResponse {
-  credibility?: DataCredibilityMeta;
-}
-
-interface RadarApiResponse {
-  credibility?: DataCredibilityMeta;
-}
-
-interface WeatherApiResponse {
-  credibility?: DataCredibilityMeta;
-}
+import AutoRefresh from '../components/AutoRefresh';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -120,18 +107,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <div style={{ maxWidth: '920px', margin: '0 auto 1rem auto' }}>
-        {weatherCredibility && (
-          <DataCredibilityCard title="WEATHER FEED" metadata={weatherCredibility} thresholdMinutes={30} />
-        )}
-        {warningsCredibility && (
-          <DataCredibilityCard title="WARNINGS FEED" metadata={warningsCredibility} thresholdMinutes={15} />
-        )}
-        {radarCredibility && (
-          <DataCredibilityCard title="RADAR FEED" metadata={radarCredibility} thresholdMinutes={15} />
-        )}
-      </div>
       <DecisionPanel data={data} />
+      <AutoRefresh />
     </>
   );
 }
