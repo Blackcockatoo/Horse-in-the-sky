@@ -5,9 +5,20 @@
  * No clutter. Just the radar.
  */
 
+import { useState } from 'react';
 import RadarLoop from '../../components/RadarLoop';
+import RefreshControls from '../../components/RefreshControls';
+import { formatDateTime } from '../../lib/time';
 
 export default function RadarPage() {
+  const [lastUpdated, setLastUpdated] = useState(() => new Date().toISOString());
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setLastUpdated(new Date().toISOString());
+    setRefreshKey(prev => prev + 1);
+  };
+
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <h1 style={{
@@ -20,10 +31,11 @@ export default function RadarPage() {
       }}>
         MELBOURNE RADAR
       </h1>
-      <RadarLoop />
-      <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#555', textAlign: 'center' }}>
-        Source: Bureau of Meteorology | Auto-refreshes with BOM loop
-      </div>
+      <RadarLoop key={refreshKey} />
+      <RefreshControls
+        lastUpdatedLabel={`Source: Bureau of Meteorology | Updated ${formatDateTime(lastUpdated)}`}
+        onRefresh={handleRefresh}
+      />
     </div>
   );
 }

@@ -7,11 +7,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import DecisionPanel from '../components/DecisionPanel';
+import RefreshControls from '../components/RefreshControls';
+import { formatTime } from '../lib/time';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -19,6 +22,7 @@ export default function Dashboard() {
       if (!res.ok) throw new Error(`${res.status}`);
       const json = await res.json();
       setData(json);
+      setLastUpdated(json.updatedAt ?? new Date().toISOString());
       setError(null);
     } catch (err) {
       setError('Failed to fetch data. Retrying...');
@@ -86,5 +90,13 @@ export default function Dashboard() {
     );
   }
 
-  return <DecisionPanel data={data} />;
+  return (
+    <div>
+      <DecisionPanel data={data} />
+      <RefreshControls
+        lastUpdatedLabel={`Updated ${lastUpdated ? formatTime(lastUpdated) : 'N/A'} | Auto-refreshes every 10 min`}
+        onRefresh={fetchData}
+      />
+    </div>
+  );
 }

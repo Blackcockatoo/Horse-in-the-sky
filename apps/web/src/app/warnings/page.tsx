@@ -5,9 +5,10 @@
  * Severity-sorted. Colour-coded.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type { WarningsData, Warning } from '../../types/warning.types';
 import { formatDateTime } from '../../lib/time';
+import RefreshControls from '../../components/RefreshControls';
 
 const SEVERITY_COLORS: Record<string, string> = {
   EXTREME: '#ff1744',
@@ -22,17 +23,22 @@ const SEVERITY_ORDER = ['EXTREME', 'SEVERE', 'MODERATE', 'MINOR', 'UNKNOWN'];
 export default function WarningsPage() {
   const [data, setData] = useState<WarningsData | null>(null);
 
-  useEffect(() => {
-    fetch('/api/warnings')
-      .then(r => r.json())
-      .then(setData)
-      .catch(console.error);
-
-    const interval = setInterval(() => {
-      fetch('/api/warnings').then(r => r.json()).then(setData).catch(console.error);
-    }, 5 * 60 * 1000);
-    return () => clearInterval(interval);
+  const fetchWarnings = useCallback(async () => {
+    try {
+      const response = await fetch('/api/warnings');
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchWarnings();
+
+    const interval = setInterval(fetchWarnings, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchWarnings]);
 
   if (!data) {
     return <div style={{ padding: '2rem', color: '#888', fontFamily: 'monospace' }}>Loading warnings...</div>;
@@ -77,9 +83,10 @@ export default function WarningsPage() {
         </div>
       )}
 
-      <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#555', textAlign: 'center' }}>
-        Source: Bureau of Meteorology | Updated {data.fetchedAt ? formatDateTime(data.fetchedAt) : 'N/A'}
-      </div>
+      <RefreshControls
+        lastUpdatedLabel={`Source: Bureau of Meteorology | Updated ${data.fetchedAt ? formatDateTime(data.fetchedAt) : 'N/A'}`}
+        onRefresh={fetchWarnings}
+      />
     </div>
   );
 }

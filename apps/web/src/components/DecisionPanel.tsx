@@ -360,10 +360,6 @@ export default function DecisionPanel({ data }: { data: DecisionData | null }) {
         <DecisionRow label="Hay" decision={farm.hay.overall} />
       </div>
 
-      {/* LAST UPDATED */}
-      <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#555', padding: '0.5rem' }}>
-        Updated {formatTime(data.updatedAt)} | Auto-refreshes every 10 min
-      </div>
     </div>
   );
 }
