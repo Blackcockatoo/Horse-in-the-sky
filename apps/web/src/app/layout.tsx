@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'HMFFCC — Heavens Meadow Farm Flight Command Centre',
-  description: 'Aviation and farm operations command centre. Tyabb, VIC.',
+  description: 'Peter Moran\'s aviation and farm operations command centre. Tyabb, VIC.',
   manifest: '/manifest.json',
   icons: { apple: '/icons/icon-192.png' },
 };
@@ -22,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <nav>
           <div className="nav-inner">
-            <a href="/" className="nav-brand">HMFFCC</a>
+            <div className="nav-brand-group">
+              <a href="/" className="nav-brand">HMFFCC</a>
+              <div className="nav-owner">PETER MORAN · FLIGHT + FARM</div>
+            </div>
             <div className="nav-links">
               <a href="/">CMD</a>
               <a href="/flight">FLIGHT</a>
